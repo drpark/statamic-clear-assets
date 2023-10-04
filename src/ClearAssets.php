@@ -13,7 +13,7 @@ class ClearAssets extends Command
 {
     use RunsInPlease;
 
-    protected $name = 'statamic:assets:clear';
+    protected $name = 'statamic:assets:clear {--force}';
 
     protected $description = "Delete unused assets.";
 
@@ -32,11 +32,12 @@ class ClearAssets extends Command
     public function handle()
     {
         $unusedAssets = $this->filterUnused(Asset::all());
+        $force=$this->Option('force');
 
         if ($unusedAssets->isEmpty()) {
             return $this->info('No unused assets found.');
         }
-
+        if(!$force){
         $unusedAssets
             ->tap(fn ($assets) => $this->listAssets($assets))
             ->tap(fn ($assets) => $this->comment(
@@ -62,6 +63,14 @@ class ClearAssets extends Command
                     }
                 })
             );
+        }
+        else{
+        $unusedAssets->tap(fn ($assets) => $this->listAssets($assets))->when(
+                force,
+                fn ($assets) => $assets->each(fn ($asset) => $this->removeAsset($asset))
+            )
+
+        }
     }
 
     private function listAssets(AssetCollection $assets)
