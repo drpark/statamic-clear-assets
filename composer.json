@@ -1,5 +1,5 @@
 {
-    "name": "swiftmade/statamic-clear-assets",
+    "name": "drpark/statamic-clear-assets",
     "license": "MIT",
     "type": "statamic-addon",
     "description": "Deletes unused assets. Saves storage space.",
